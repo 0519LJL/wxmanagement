@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>我的二维码</title>
+    <script src="./static/js/jquery-3.4.1.min.js" charset="utf-8"></script>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta content="false" name="twcClient" id="twcClient"/>
+    <style type="text/css">
+        *{
+            margin:0;
+            padding:0;
+        }
+        a{
+            text-decoration: none;
+        }
+        img{
+            max-width: 100%;
+            height: auto;
+        }
+        .weixin-tip{
+            display: none;
+            position: fixed;
+            left:0;
+            top:0;
+            bottom:0;
+            background: rgba(0,0,0,0.8);
+            filter:alpha(opacity=80);
+            height: 100%;
+            width: 100%;
+            z-index: 100;
+        }
+        .weixin-tip p{
+            text-align: center;
+            margin-top: 10%;
+            padding:0 5%;
+        }
+    </style>
+</head>
+<body>
+<div >
+    <p>
+        <img src="./static/image/qrCodes/o224g1U6j6Gi25FJVNNj96rUt9NI.png" height="300" width="300"/>
+    </p>
+</div>
+</body>
+<script type="text/javascript">
+    $(window).on("load",function(){
+        var winHeight = $(window).height();
+        function is_weixin() {
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        var isWeixin = is_weixin();
+        if(isWeixin){
+            $(".weixin-tip").css("height",winHeight);
+            $(".weixin-tip").show();
+        }
+    })
+</script>
+</html>
