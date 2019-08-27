@@ -7,6 +7,6 @@ CREATE TABLE `wx_member_qrcode` (
   `path` varchar(500) DEFAULT NULL COMMENT '二维码路径',
 	`create_time` datetime DEFAULT NOW() COMMENT '创建时间',
   UNIQUE KEY `qrid` (`qrid`),
-  KEY `idx_mid` (`mid`)
+  KEY `idx_mid` openid
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员二维码表';
 DELIMITER ;;

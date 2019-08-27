@@ -13,4 +13,5 @@ public class MemberDTO {
     public String wxOpenid;
     public String wxName;
     public String createTime;
+    public int enable;
 }

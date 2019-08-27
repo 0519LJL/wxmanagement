@@ -4,6 +4,9 @@ import com.iwei.wxmanagement.util.MessageUtil;
 import com.iwei.wxmanagement.wx.memberQrCode.service.MemberQrCodeService;
 import com.iwei.wxmanagement.wx.msgRecord.model.MsgRecord;
 import com.iwei.wxmanagement.wx.msgRecord.service.MsgRecordService;
+import com.iwei.wxmanagement.wx.video.model.Video;
+import com.iwei.wxmanagement.wx.video.model.VideoDTO;
+import com.iwei.wxmanagement.wx.video.service.VideoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +39,11 @@ public class wxController {
     @Autowired
     private MsgRecordService msgRecordService;
 
+    @Autowired
+    private VideoService videoService;
+
     @ApiOperation(value = "获取accessToken", notes = "获取accessToken")
-    @RequestMapping(value = "/getAccessToken", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getAccessToken.html", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public WxAccessToken getAccessToken() {
         return wxservice.getAccessToke();
@@ -58,17 +64,13 @@ public class wxController {
             WxRespSetting contect = new WxRespSetting();
 
             //插入查询记录
-            MsgRecord record = new MsgRecord();
-            record.comment = content;
-            record.openid = fromUserName;
-            msgRecordService.addMsgRecord(record);
+            msgRecordService.addMsgRecord(1,fromUserName,content);
 
             switch (content) {
                 case "1":
                     contect.menuId = -4;
                     contect.messageType = "text";
-                    contect.title = "测试" +
-                            "http://www.800pharm.com/";
+                    contect.title = "<a href=\"\"http://m.800pharm.com/delivery\"\">点我可查询订单/物流喔</a>";
                     list.add(contect);
 
                     handleEvent(handler, list);
@@ -85,12 +87,6 @@ public class wxController {
                 case "我要加速":
                     contect.messageType = "static/image";
                     list.add(contect);
-
-                    WxRespSetting contectTxt = new WxRespSetting();
-                    contectTxt.messageType = "text";
-                    contectTxt.title = "赞赏后公众号将在半小时内上架您前面检索的所有相关影片.";
-                    list.add(contectTxt);
-
                     handleEvent(handler, list);
                     break;
 
@@ -102,7 +98,7 @@ public class wxController {
                         contect.title = "我的二维码";
                         contect.descrtiptin = "轻松成为代理,马上转发获得可观分成.";
                         contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
-                        contect.url = homePath + "/getQrCode?userId=" + fromUserName + "&type=0";
+                        contect.url = homePath + "/getQrCode.html?userId=" + fromUserName + "&type=0";
                         list.add(contect);
                         handleEvent(handler, list);
                     }
@@ -117,28 +113,38 @@ public class wxController {
                         contect.title = "战狼";
                         contect.descrtiptin = "战狼";
                         contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
-                        contect.url = homePath + "/getModelView";
+                        contect.url = homePath + "/getModelView.html";
                         list.add(contect);
                         handleEvent(handler, list);
                     }
                     handler.responseNull();
                     break;
-                case "6":
-                    String homePath = request.getScheme() + "://" + request.getServerName() + "/" + request.getContextPath();
-                    contect.messageType = "news";
-                    contect.title = "战狼";
-                    contect.descrtiptin = "战狼";
-                    contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
-                    contect.url = homePath + "/getMovieView";
-                    list.add(contect);
-                    handleEvent(handler, list);
-                    break;
                 default:
-                    contect.messageType = "text";
-                    contect.title = "没有检索到\"" + content + "\"相关影片.\n如需快速获取到相关影片,回复\"我要加速\"即可.";
-                    list.add(contect);
+                    VideoDTO videoDTO = new VideoDTO();
+                    videoDTO.name = content;
+                    List<Video> videos = videoService.getVideoByName(videoDTO);
+                    System.out.println(videos);
 
-                    handleEvent(handler, list);
+                    if(videos.size() >0){
+                        String contentStr = "检索到\""+content+"\"相关影片如下:\n";
+
+                        for (int i = 0; i < videos.size(); i++) {
+                            contentStr += videos.get(i).name +"\n迅雷下载地址:"+ videos.get(i).url+"\n";
+                        }
+
+                        contect.messageType = "text";
+                        contect.title = contentStr;
+                        list.add(contect);
+
+                        handleEvent(handler, list);
+                    }else {
+                        contect.messageType = "text";
+                        contect.title = "没有检索到\"" + content + "\"相关影片.\n如需快速获取到相关影片,回复\"我要加速\"即可.";
+                        list.add(contect);
+
+                        handleEvent(handler, list);
+                    }
+
                     break;
             }
 
@@ -146,21 +152,24 @@ public class wxController {
         } else if (MessageUtil.REQ_MESSAGE_TYPE_EVENT.equals(msgType)) {
             // 事件类型
             String eventType = handler.getWxparameter("Event");
-            if (eventType.equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)) {
-                String eventKey = handler.getWxparameter("EventKey");
-                if (!StringUtils.isEmpty(eventKey)) {
-                    System.out.println(eventKey);
-                }
-                wxservice.subscribeGreet(handler);
+            String eventKey = handler.getWxparameter("EventKey");
+            if (!StringUtils.isEmpty(eventKey)) {
+                System.out.println(eventKey);
+            }
+            switch (eventType){
+                case MessageUtil.EVENT_TYPE_SUBSCRIBE:
+                    wxservice.subscribeGreet(handler);
+                    break;
+                case MessageUtil.EVENT_TYPE_UNSUBSCRIBE :
+                    wxservice.deleteMember(handler);
+                    break;
 
             }
-
         } else if (MessageUtil.REQ_MESSAGE_TYPE_VOICE.equals(msgType) || MessageUtil.REQ_MESSAGE_TYPE_IMAGE.equals(msgType)) {
         } else {
             if (handler.checkSignature()) {
                 handler.print(request.getParameter("echostr"));
             } else {
-                // 其他类型转发小能
             }
         }
 
@@ -168,7 +177,7 @@ public class wxController {
     }
 
     @ApiOperation(value = "打开页面", notes = "打开页面")
-    @RequestMapping(value = "/getModelView", method = {RequestMethod.GET})
+    @RequestMapping(value = "/getModelView.html", method = {RequestMethod.GET})
     public String getModelView(HashMap<String, Object> map) {
         map.put("hello", "欢迎进入HTML页面");
         map.put("imgUrl", "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg");
@@ -176,20 +185,20 @@ public class wxController {
     }
 
     @ApiOperation(value = "查看二维码", notes = "查看二维码")
-    @RequestMapping(value = "/getQrCode", method = {RequestMethod.GET})
+    @RequestMapping(value = "/getQrCode.html", method = {RequestMethod.GET})
     public String getQrCode(@RequestParam String userId, @RequestParam int type) {
         System.out.println("userId :" + userId + "type:" + type);
         return "qrCode";
     }
 
     @ApiOperation(value = "打开视频页面", notes = "打开视频页面")
-    @RequestMapping(value = "/getMovieView", method = {RequestMethod.GET})
+    @RequestMapping(value = "/getMovieView.html", method = {RequestMethod.GET})
     public String getMovieView(HashMap<String, Object> map) {
         return "viewMovie";
     }
 
     @ApiOperation(value = "查看影片", notes = "查看影片")
-    @RequestMapping(value = "/getView", method = {RequestMethod.GET})
+    @RequestMapping(value = "/getView.html", method = {RequestMethod.GET})
     @ResponseBody
     public void getView(HttpServletResponse response) {
         show(response, "video");
@@ -235,7 +244,7 @@ public class wxController {
     }
 
     @ApiOperation(value = "获取二维码", notes = "获取二维码")
-    @RequestMapping(value = "/getQrCodeByUserId", method = {RequestMethod.GET})
+    @RequestMapping(value = "/getQrCodeByUserId.html", method = {RequestMethod.GET})
     public void getQrCodeByUserId(HttpServletRequest request, HttpServletResponse response, @RequestParam String userId, @RequestParam int type) {
         WeiXinHandler handler = new WeiXinHandler(request, response);
         handler.init();

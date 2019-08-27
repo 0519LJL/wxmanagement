@@ -36,6 +36,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public MemberDTO selectByOpenId(String wxOpenid){
+        MemberDTO memberDTO = memberMapper.selectByOpenId(wxOpenid);
+        return  memberDTO;
+    }
+
+    @Override
     public Member addMember(Member member){
         if(member == null){
             return member;
@@ -47,6 +53,8 @@ public class MemberServiceImpl implements MemberService {
             member.wxOpenid = memberDTO.wxOpenid;
             member.wxName = memberDTO.wxName;
             member.createTime = memberDTO.createTime;
+            member.createTime = memberDTO.createTime;
+            member.enable = memberDTO.enable;
             return member;
         }
         memberDTO = new MemberDTO();
@@ -55,6 +63,30 @@ public class MemberServiceImpl implements MemberService {
         memberDTO.createTime = sdf.format(new Date());
         memberMapper.insert(memberDTO);
         member.mid = memberDTO.mid;
+        return  member;
+    }
+
+    @Override
+    public Member updateMember(Member member){
+        if(member == null){
+            return member;
+        }
+
+        MemberDTO memberDTO = memberMapper.selectByOpenId(member.wxOpenid);
+        if(memberDTO == null){
+            return member;
+        }
+        memberDTO = new MemberDTO();
+        memberDTO.wxOpenid = member.wxOpenid;
+        memberDTO.name = member.name;
+        memberDTO.address = member.address;
+        memberDTO.postCode = member.postCode;
+        memberDTO.mobile = member.mobile;
+        memberDTO.verifyMobile = member.verifyMobile;
+        memberDTO.wxName = member.wxName;
+        memberDTO.enable = member.enable;
+        memberMapper.updateByPrimaryKey(memberDTO);
+        member.enable = 0;
         return  member;
     }
 }

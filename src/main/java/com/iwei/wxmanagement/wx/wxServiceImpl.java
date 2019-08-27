@@ -9,6 +9,8 @@ import com.iwei.wxmanagement.wx.dao.WxAccessTokenDaoMapper;
 import com.iwei.wxmanagement.wx.dto.WxAccessTokenDTO;
 import com.iwei.wxmanagement.wx.member.model.Member;
 import com.iwei.wxmanagement.wx.member.service.MemberService;
+import com.iwei.wxmanagement.wx.msgRecord.model.MsgRecord;
+import com.iwei.wxmanagement.wx.msgRecord.service.MsgRecordService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class wxServiceImpl implements wxService {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private MsgRecordService msgRecordService;
 
     @Override
     public WxAccessToken getAccessToke() {
@@ -61,21 +66,60 @@ public class wxServiceImpl implements wxService {
 
     @Override
     public void subscribeGreet(WeiXinHandler handler){
+        String fromUserName = handler.getWxparameter("FromUserName");
+        boolean isBack = false;
         /*1.根据用户openID获取用户信息*/
 
         /*2.关注用户信息保存到数据库*/
         //服务号获取不了用户信息只能保存openid
         Member member = new Member();
         member.wxOpenid = handler.getWxparameter("FromUserName");
-        memberService.addMember(member);
+        member = memberService.addMember(member);
 
-        /*3.回复用户招呼信息*/
+        //重新关注用户需要设置为启用并记录日志为重新关注
+        if(member!=null && member.enable ==0){
+            isBack = true;
+            member.enable =1;
+            memberService.updateMember(member);
+
+        }
+
+        //3插入查询记录
+        String comment = "关注公众号";
+        if(isBack) comment = "重新关注公众号";
+        msgRecordService.addMsgRecord(0,fromUserName,comment);
+
+        /*4.回复用户招呼信息*/
         List<WxRespSetting> list = new ArrayList<WxRespSetting>();
         WxRespSetting contect = new WxRespSetting();
         contect.messageType = "text";
-        contect.title = "您好,欢迎来到电影123的世界!\n【发送电影名称即可获取相对应视频下载链接，如“哪吒”.】" +
-                "\n(因公众号服务仍在服务调试阶段,公众号仍属正常运作请勿取消关注.)";
+        if(isBack){
+            contect.title = "欢迎回来!\n【发送电影名称即可获取相对应视频下载链接，如“哪吒”.】" +
+                    "\n(因公众号服务仍在服务调试阶段,公众号仍属正常运作请勿取消关注.)";
+        }else{
+            contect.title = "您好,欢迎来到电影123的世界!\n【发送电影名称即可获取相对应视频下载链接，如“哪吒”.】" +
+                    "\n(因公众号服务仍在服务调试阶段,公众号仍属正常运作请勿取消关注.)";
+        }
         list.add(contect);
+        handleEvent(handler, list);
+    }
+
+    @Override
+    public void deleteMember (WeiXinHandler handler){
+        String fromUserName = handler.getWxparameter("FromUserName");
+        Member member = new Member();
+        member.wxOpenid = fromUserName;
+        member.enable =0;
+        memberService.updateMember(member);
+
+        msgRecordService.addMsgRecord(0,fromUserName,"取消关注公众号");
+
+        /*3.回复用户招呼信息*/
+        List<WxRespSetting> list = new ArrayList<WxRespSetting>();
+        WxRespSetting content = new WxRespSetting();
+        content.messageType = "text";
+        content.title = "感谢您的一路陪伴,再见!";
+        list.add(content);
         handleEvent(handler, list);
     }
 

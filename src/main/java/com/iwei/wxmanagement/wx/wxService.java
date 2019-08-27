@@ -10,4 +10,6 @@ public interface wxService {
     String CreatQRCodeImage(HttpServletRequest request,String fromUserName) throws Exception;
 
     void subscribeGreet(WeiXinHandler handler);
+
+    void deleteMember (WeiXinHandler handler);
 }
