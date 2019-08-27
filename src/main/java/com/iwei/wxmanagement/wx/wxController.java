@@ -128,10 +128,14 @@ public class wxController {
                     if(videos.size() >0){
                         String contentStr = "检索到\""+content+"\"相关影片如下:\n";
 
-                        for (int i = 0; i < videos.size(); i++) {
-                            contentStr += videos.get(i).name +"\n迅雷下载地址:"+ videos.get(i).url+"\n";
-                        }
+                        int viewNum = (videos.size() > 5 ? 5:videos.size());
 
+                        for (int i = 0; i < viewNum; i++) {
+                            contentStr += "\n"+videos.get(i).name +"\n迅雷下载地址:"+ videos.get(i).url+"\n";
+                        }
+                        if(videos.size() > 5){
+                            contentStr +="\n更多影集请添加微信:\"LZ_7878\"咨询.";
+                        }
                         contect.messageType = "text";
                         contect.title = contentStr;
                         list.add(contect);
@@ -139,7 +143,7 @@ public class wxController {
                         handleEvent(handler, list);
                     }else {
                         contect.messageType = "text";
-                        contect.title = "没有检索到\"" + content + "\"相关影片.\n如需快速获取到相关影片,回复\"我要加速\"即可.";
+                        contect.title = "没有检索到\"" + content + "\"相关影片.\n更多影集请添加微信:\"LZ_7878\"咨询.";
                         list.add(contect);
 
                         handleEvent(handler, list);

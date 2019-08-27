@@ -8,4 +8,6 @@ import java.util.List;
 public interface VideoService {
 
     List<Video> getVideoByName(VideoDTO videoDTO);
+
+    int addVideo(List<VideoDTO> videoDTOList);
 }

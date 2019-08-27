@@ -3,7 +3,7 @@
 <mapper namespace="com.iwei.wxmanagement.wx.dao.VideoMapper">
     <resultMap id="BaseResultMap" type="com.iwei.wxmanagement.wx.video.model.Video">
         <id column="vid" property="vid" jdbcType="INTEGER"/>
-        <id column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="movie_type" property="movieType" jdbcType="INTEGER"/>
         <result column="part" property="part" jdbcType="VARCHAR"/>
         <result column="url" property="url" jdbcType="VARCHAR"/>
@@ -28,20 +28,24 @@
         where name LIKE CONCAT(CONCAT(#{name}), '%')
         <if test="part != null">
             and part=#{part,jdbcType=VARCHAR}
-        </if>
+        </if> ORDER BY name ASC
     </select>
 
     <insert id="insert" parameterType="com.iwei.wxmanagement.wx.video.model.VideoDTO">
-    insert into wx_msg_record (
-    openid,
-    type,
-    comment,
+    insert into wx_video (
+    name,
+    movie_type,
+    part,
+    url,
+    view_num,
     create_time
       )
     values (
-    #{openid,jdbcType=VARCHAR},
-    #{type,jdbcType=INTEGER},
-    #{comment,jdbcType=VARCHAR},
+    #{name,jdbcType=VARCHAR},
+    #{movieType,jdbcType=INTEGER},
+    #{part,jdbcType=VARCHAR},
+    #{url,jdbcType=VARCHAR},
+    #{viewNum,jdbcType=INTEGER},
     #{createTime,jdbcType=VARCHAR}
       )
   </insert>
