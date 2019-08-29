@@ -26,9 +26,14 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public int addVideo(List<VideoDTO> videoDTOList){
         int count = 0;
-        int type =  (videoDTOList.size() > 5 ? 1 : 0);
         for (VideoDTO videoDTO : videoDTOList) {
-            videoDTO.movieType=type;
+
+            List<Video> videoList = videoMapper.getVideosByName(videoDTO);
+            if(videoList.size() >= 1){
+                continue;
+            }
+
+            videoDTO.movieType=videoDTO.movieType;
             videoDTO.viewNum = 0;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             videoDTO.createTime = sdf.format(new Date());

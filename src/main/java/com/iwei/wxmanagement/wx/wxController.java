@@ -67,71 +67,74 @@ public class wxController {
             msgRecordService.addMsgRecord(1,fromUserName,content);
 
             switch (content) {
-                case "1":
-                    contect.menuId = -4;
-                    contect.messageType = "text";
-                    contect.title = "<a href=\"\"http://m.800pharm.com/delivery\"\">点我可查询订单/物流喔</a>";
-                    list.add(contect);
-
-                    handleEvent(handler, list);
-                    break;
-                case "2":
-                    contect.messageType = "news";
-                    contect.title = "测试";
-                    contect.descrtiptin = "测试";
-                    contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
-                    contect.url = "http://www.800pharm.com/";
-                    list.add(contect);
-                    handleEvent(handler, list);
-                    break;
+//                case "1":
+//                    contect.menuId = -4;
+//                    contect.messageType = "text";
+//                    contect.title = "<a href=\"\"http://m.800pharm.com/delivery\"\">点我可查询订单/物流喔</a>";
+//                    list.add(contect);
+//
+//                    handleEvent(handler, list);
+//                    break;
+//                case "2":
+//                    contect.messageType = "news";
+//                    contect.title = "测试";
+//                    contect.descrtiptin = "测试";
+//                    contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
+//                    contect.url = "http://www.800pharm.com/";
+//                    list.add(contect);
+//                    handleEvent(handler, list);
+//                    break;
                 case "我要加速":
                     contect.messageType = "static/image";
                     list.add(contect);
                     handleEvent(handler, list);
                     break;
 
-                case "4":
-                    String imgPath = wxservice.CreatQRCodeImage(request, fromUserName);
-                    if (!StringUtils.isEmpty(imgPath)) {
-                        String homePath = request.getScheme() + "://" + request.getServerName() + "/" + request.getContextPath();
-                        contect.messageType = "news";
-                        contect.title = "我的二维码";
-                        contect.descrtiptin = "轻松成为代理,马上转发获得可观分成.";
-                        contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
-                        contect.url = homePath + "/getQrCode.html?userId=" + fromUserName + "&type=0";
-                        list.add(contect);
-                        handleEvent(handler, list);
-                    }
-                    handler.responseNull();
-                    break;
-
-                case "5":
-                    String videoPath = wxservice.CreatQRCodeImage(request, fromUserName);
-                    if (!StringUtils.isEmpty(videoPath)) {
-                        String homePath = request.getScheme() + "://" + request.getServerName() + "/" + request.getContextPath();
-                        contect.messageType = "news";
-                        contect.title = "战狼";
-                        contect.descrtiptin = "战狼";
-                        contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
-                        contect.url = homePath + "/getModelView.html";
-                        list.add(contect);
-                        handleEvent(handler, list);
-                    }
-                    handler.responseNull();
-                    break;
+//                case "4":
+//                    String imgPath = wxservice.CreatQRCodeImage(request, fromUserName);
+//                    if (!StringUtils.isEmpty(imgPath)) {
+//                        String homePath = request.getScheme() + "://" + request.getServerName() + "/" + request.getContextPath();
+//                        contect.messageType = "news";
+//                        contect.title = "我的二维码";
+//                        contect.descrtiptin = "轻松成为代理,马上转发获得可观分成.";
+//                        contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
+//                        contect.url = homePath + "/getQrCode.html?userId=" + fromUserName + "&type=0";
+//                        list.add(contect);
+//                        handleEvent(handler, list);
+//                    }
+//                    handler.responseNull();
+//                    break;
+//
+//                case "5":
+//                    String videoPath = wxservice.CreatQRCodeImage(request, fromUserName);
+//                    if (!StringUtils.isEmpty(videoPath)) {
+//                        String homePath = request.getScheme() + "://" + request.getServerName() + "/" + request.getContextPath();
+//                        contect.messageType = "news";
+//                        contect.title = "战狼";
+//                        contect.descrtiptin = "战狼";
+//                        contect.picUrl = "https://mmbiz.qpic.cn/mmbiz_jpg/MILnnOrpvzPQ5xuD8JxzWt1Sd1eUwTf3xCY7nLicDubJULwOLKVcuGOJ64uERU9lACN2AhPD0hUia7IILejv0bVg/0?wx_fmt=jpeg";
+//                        contect.url = homePath + "/getModelView.html";
+//                        list.add(contect);
+//                        handleEvent(handler, list);
+//                    }
+//                    handler.responseNull();
+//                    break;
                 default:
                     VideoDTO videoDTO = new VideoDTO();
                     videoDTO.name = content;
                     List<Video> videos = videoService.getVideoByName(videoDTO);
-                    System.out.println(videos);
+                    List<Video> showVideos = new ArrayList<>();
+                    for (Video v : videos) {
+                        if(showVideos.size() < 5 && v.passcodeType == 0){
+                            showVideos.add(v);
+                        }
+                    }
 
-                    if(videos.size() >0){
+                    if(showVideos.size() >0){
                         String contentStr = "检索到\""+content+"\"相关影片如下:\n";
 
-                        int viewNum = (videos.size() > 5 ? 5:videos.size());
-
-                        for (int i = 0; i < viewNum; i++) {
-                            contentStr += "\n"+videos.get(i).name +"\n迅雷下载地址:"+ videos.get(i).url+"\n";
+                        for (int i = 0; i < showVideos.size(); i++) {
+                            contentStr += "\n"+showVideos.get(i).name +"\n迅雷下载地址:"+ showVideos.get(i).url+"\n";
                         }
                         if(videos.size() > 5){
                             contentStr +="\n更多影集请添加微信:\"LZ_7878\"咨询.";

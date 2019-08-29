@@ -14,4 +14,6 @@ public class MemberDTO {
     public String wxName;
     public String createTime;
     public int enable;
+    public int passcodeType;
+    public int endTime;
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +38,22 @@ public class VideoController {
         return "获取视频:" + videoDTOList.size() + "\n成功:" + success;
     }
 
+    @ApiOperation(value = "获取视频(页)", notes = "获取视频(页)")
+    @RequestMapping(value = "/getNewVideoPage.html", method = {RequestMethod.GET})
+    @ResponseBody
+    public String getNewVideoPage(@RequestParam String password, @RequestParam String url) throws Exception {
+        if (StringUtils.isEmpty(password) || !password.equals("L.1234556!")) {
+            throw new Exception("请输入获取视频密码");
+        }
+        if (StringUtils.isEmpty(url)) {
+            throw new Exception("没有视频获取入口");
+        }
+
+        List<VideoDTO> videoDTOList = VideoUtil.getDownloadUrlByPage(url);
+        int success = videoService.addVideo(videoDTOList);
+        return "获取视频:" + videoDTOList.size() + "\n成功:" + success;
+    }
+
     @ApiOperation(value = "获取视频", notes = "获取视频")
     @RequestMapping(value = "/getVideo.html", method = {RequestMethod.GET})
     @ResponseBody
@@ -48,6 +65,14 @@ public class VideoController {
 
         VideoDTO videoDTO = new VideoDTO();
         videoDTO.name = name;
-        return videoService.getVideoByName(videoDTO);
+        List<Video> videos = videoService.getVideoByName(videoDTO);
+        List<Video> showVideos = new ArrayList<>();
+        for (Video v : videos) {
+            if(showVideos.size() < 5 && v.passcodeType == 0){
+                showVideos.add(v);
+            }
+        }
+
+        return  showVideos;
     }
 }

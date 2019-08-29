@@ -9,9 +9,10 @@
         <result column="url" property="url" jdbcType="VARCHAR"/>
         <result column="view_num" property="viewNum" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="passcode_type" property="passcodeType" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
-    vid,name, movie_type,part,url,view_num, create_time
+    vid,name, movie_type,part,url,view_num, create_time,passcode_type
   </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -25,7 +26,7 @@
         select
         <include refid="Base_Column_List"/>
         from wx_video
-        where name LIKE CONCAT(CONCAT(#{name}), '%')
+        where name LIKE CONCAT('%',CONCAT(#{name}), '%')
         <if test="part != null">
             and part=#{part,jdbcType=VARCHAR}
         </if> ORDER BY name ASC
@@ -38,7 +39,8 @@
     part,
     url,
     view_num,
-    create_time
+    create_time,
+    passcode_type
       )
     values (
     #{name,jdbcType=VARCHAR},
@@ -46,7 +48,8 @@
     #{part,jdbcType=VARCHAR},
     #{url,jdbcType=VARCHAR},
     #{viewNum,jdbcType=INTEGER},
-    #{createTime,jdbcType=VARCHAR}
+    #{createTime,jdbcType=VARCHAR},
+    #{passcodeType,jdbcType=INTEGER}
       )
   </insert>
 

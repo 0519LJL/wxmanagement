@@ -15,4 +15,20 @@ public class VideoDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     public String createTime;
+
+    public int passcodeType;
+
+    public VideoDTO(){}
+
+    public VideoDTO(String name,int movieType,String url){
+        this.name = name;
+        this.movieType = movieType;
+        this.url = url;
+    }
+    public VideoDTO(String name,int movieType,String url,int passcodeType){
+        this.name = name;
+        this.movieType = movieType;
+        this.url = url;
+        this.passcodeType=passcodeType;
+    }
 }

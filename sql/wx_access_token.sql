@@ -1,6 +1,6 @@
 
-DROP TABLE IF EXISTS `tb_wx_access_token`;
-CREATE TABLE `tb_wx_access_token` (
+DROP TABLE IF EXISTS `wx_access_token`;
+CREATE TABLE `wx_access_token` (
   `Id` int(11) NOT NULL,
   `access_token` varchar(255) DEFAULT NULL COMMENT '接口调用凭证',
   `expires_in` int(11) DEFAULT NULL COMMENT 'access_token接口调用凭证超时时间，单位（秒）',

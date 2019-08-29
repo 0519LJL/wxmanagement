@@ -12,9 +12,11 @@
     <result column="wx_name" property="wxName" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="VARCHAR" />
     <result column="enable" property="enable" jdbcType="INTEGER" />
+    <result column="passcode_type" property="passcodeType" jdbcType="INTEGER" />
+    <result column="end_time" property="endTime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    mid, name, address, post_code, mobile, verify_mobile, wx_openid,wx_name,create_time,enable
+    mid, name, address, post_code, mobile, verify_mobile, wx_openid,wx_name,create_time,enable,passcode_type,end_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -91,6 +93,12 @@
       </if>
       <if test="enable != null" >
         enable = #{enable,jdbcType=INTEGER},
+      </if>
+      <if test="passcodeType != null" >
+        passcode_type = #{passcodeType,jdbcType=INTEGER},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=VARCHAR},
       </if>
     </set>
     where wx_openid = #{wxOpenid,jdbcType=VARCHAR}
