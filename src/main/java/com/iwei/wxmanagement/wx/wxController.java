@@ -144,6 +144,12 @@ public class wxController {
                         list.add(contect);
 
                         handleEvent(handler, list);
+                    }else if (showVideos.size() == 0 && videos.size() >0){
+                        contect.messageType = "text";
+                        contect.title = "您还没有权限查看\""+content+"\".\n请添加微信:\"LZ_7878\"开通权限.";
+                        list.add(contect);
+
+                        handleEvent(handler, list);
                     }else {
                         contect.messageType = "text";
                         contect.title = "没有检索到\"" + content + "\"相关影片.\n更多影集请添加微信:\"LZ_7878\"咨询.";
